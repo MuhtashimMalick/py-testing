@@ -71,3 +71,32 @@ def test_read_api_key_by_id(normal_user_token_headers: dict[str, str]) -> None:
     assert content["owner_id"] == owner_id
 
     delete_api_key(id=content["id"], headers=headers)
+
+
+def test_upload_file(normal_user_token_headers):
+    headers = {
+        "Authorization": f"Bearer {normal_user_token_headers['access_token']}",
+        "accept": "application/json"
+    }
+    files = {
+        "file": ("<file_name>", open("<file_path>", "rb"), "application/pdf"),
+    }
+    data = {
+        "is_menu": "false",
+        "is_private": "true",
+        "org_id": "abc123",
+        "auto_process": "false",
+    }
+
+    response = requests.post(
+        f"{MORFBOT_API_URL}/chats/uploadfile/",
+        headers=headers,
+        files=files,
+        data=data
+    )
+
+    assert response.status_code == 200
+    response_json = response.json()
+
+    assert "file" in response_json
+    assert response_json["file"]["org_id"] == "abc567"
