@@ -9,3 +9,6 @@ def delete_api_key(id, headers):
         headers=headers
     )
     
+def delete_uploaded_file(file_id, headers):
+    delete_url = f"{MORFBOT_API_URL}/chats/uploads/{file_id}"
+    requests.delete(delete_url, headers=headers)
